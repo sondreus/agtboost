@@ -18,6 +18,11 @@ public:
     GBTREE* next_tree;
     
     GBTREE();
+    ~GBTREE() {
+        Rcpp::Rcout << "delete GBTREE" << std::endl;
+        delete root;
+        delete next_tree;
+    };
 
     node* getRoot();
     void train(Tvec<double> &g, Tvec<double> &h, Tmat<double> &X, Tmat<double> &cir_sim,
@@ -80,6 +85,7 @@ bool GBTREE::deSerialize(GBTREE *tptr, std::ifstream& f)
 
     
 GBTREE::GBTREE(){
+    Rcpp::Rcout << "new GBTREE" << std::endl;
     this->root = NULL;
     this->next_tree = NULL;
 }
