@@ -83,6 +83,8 @@ public:
     
     void save_model(std::string filepath);
     
+    void discard_model();
+
     void load_model(std::string filepath);
     
     Tvec<double> importance(int ncols);

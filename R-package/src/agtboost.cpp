@@ -102,7 +102,12 @@ void ENSEMBLE::load_model(std::string filepath)
     this->deSerialize(this, f);
     f.close();
 }
- 
+
+void ENSEMBLE::discard_model()
+{
+    delete this->first_tree;
+}
+
 double ENSEMBLE::initial_prediction(Tvec<double> &y, std::string loss_function, Tvec<double> &w){
     
     double pred=0;
@@ -789,6 +794,7 @@ RCPP_MODULE(aGTBModule) {
         .method("get_num_leaves", &ENSEMBLE::get_num_leaves)
         .method("save_model", &ENSEMBLE::save_model)
         .method("load_model", &ENSEMBLE::load_model)
+        .method("discard_model", &ENSEMBLE::discard_model)
         .method("importance", &ENSEMBLE::importance)
         .method("convergence", &ENSEMBLE::convergence)
         // get for complexity methods

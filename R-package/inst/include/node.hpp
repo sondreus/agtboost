@@ -32,6 +32,12 @@ public:
     
     node* left;
     node* right;
+
+    ~node() {
+        Rcpp::Rcout << "destruct node" << std::endl;
+        delete left;
+        delete right;
+    };
     
     //node(double node_prediction, double node_tr_loss, double local_optimism, double CRt,
     //     int obs_in_node, int obs_in_parent, int obs_tot);
