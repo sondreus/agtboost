@@ -85,7 +85,7 @@ bool GBTREE::deSerialize(GBTREE *tptr, std::ifstream& f)
 
     
 GBTREE::GBTREE(){
-    Rcpp::Rcout << "new GBTREE" << std::endl;
+ //   Rcpp::Rcout << "new GBTREE" << std::endl;
     this->root = NULL;
     this->next_tree = NULL;
 }
