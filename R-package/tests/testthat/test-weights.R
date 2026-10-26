@@ -78,6 +78,28 @@ test_that("rescaling all weights by a constant leaves the fit unchanged", {
     expect_equal(predict(fit_5, x), predict(fit_1, x), tolerance = 1e-8)
 })
 
+test_that("rescaling all weights leaves the non-linearity check unchanged", {
+    # The training loss grows with the scale of the weights, while the check
+    # uses a fixed tolerance; weights are therefore rescaled to mean one.
+    set.seed(112358)
+    n <- 500
+    x <- matrix(runif(n * 2), n, 2)
+    y <- rexp(n, 1 / exp(0.5 + x[, 1]))
+    w <- runif(n, 0.1, 3)
+    count_warnings <- function(weights) {
+        n_warn <- 0
+        set.seed(1)
+        withCallingHandlers(
+            gbt.train(y, x, loss_function = "gamma::log", weights = weights),
+            warning = function(e) {
+                n_warn <<- n_warn + 1
+                invokeRestart("muffleWarning")
+            })
+        n_warn
+    }
+    expect_equal(count_warnings(10 * w), count_warnings(w))
+})
+
 test_that("weighted fits do not depend on row order", {
     set.seed(112358)
     n <- 500
@@ -122,6 +144,7 @@ test_that("invalid weights are rejected", {
     expect_error(gbt.train(y, x, weights = rep(1, 99)))
     expect_error(gbt.train(y, x, weights = c(-1, rep(1, 99))))
     expect_error(gbt.train(y, x, weights = c(NA, rep(1, 99))))
+    expect_error(gbt.train(y, x, weights = rep(0, 100)))
     expect_error(suppressWarnings(gbt.train(rpois(100, 2), x, loss_function = "count::auto",
                                             weights = runif(100))))
 })
