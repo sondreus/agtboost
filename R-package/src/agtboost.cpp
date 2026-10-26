@@ -57,11 +57,13 @@ void ENSEMBLE::serialize(ENSEMBLE *eptr, std::ofstream& f)
         return;
     }
     
-    f << std::fixed << eptr->nrounds << "\n";
-    f << std::fixed << eptr->learning_rate << "\n";
-    f << std::fixed << eptr->extra_param << "\n";
-    f << std::fixed << eptr->initialPred << "\n";
-    f << std::fixed << eptr->initial_score << "\n";
+    // Enough significant digits for every double to survive the round trip
+    f << std::setprecision(std::numeric_limits<double>::max_digits10);
+    f << eptr->nrounds << "\n";
+    f << eptr->learning_rate << "\n";
+    f << eptr->extra_param << "\n";
+    f << eptr->initialPred << "\n";
+    f << eptr->initial_score << "\n";
     f << eptr->loss_function << "\n";
     
     eptr->first_tree->serialize(eptr->first_tree, f);
