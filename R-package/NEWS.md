@@ -1,4 +1,13 @@
 ------------------------------------------------------------------------
+agtboost development version
+------------------------------------------------------------------------
+
+- Fix observation weights. Gradients and Hessians were multiplied by the weight vector with a matrix product (`g * w`) instead of element-wise (`g.cwiseProduct(w)`); with Eigen's runtime dimension checks disabled this scaled every observation by the first weight only, so weighted fits were identical to unweighted fits. Weights now enter gradients, Hessians, the initial prediction and the training loss for every loss function.
+- Fix the reported training loss with weights (`y*w` was used in place of weighting each observation's loss) and the negative binomial training loss (`y*dispersion` in place of `y + dispersion`), which triggered spurious "Loss-function deviating from gradient boosting approximation" warnings.
+- `gbt.train()` now errors on weights of the wrong length, negative or non-finite weights, and weights supplied with `loss_function = "count::auto"` (which does not use them).
+- Add tests for observation weights.
+
+------------------------------------------------------------------------
 agtboost 0.9.2 (2021-11-12)
 ------------------------------------------------------------------------
 

@@ -121,6 +121,8 @@ gbt.train <- function(y, x, learning_rate = 0.01,
         "prev_pred_length" = "\n Error: previous_pred must correspond to length of y",
         "force_continued" = "\n Error: force_continued_learning must be of type logical with length 1",
         "negbinom"= "\n Error: if loss_function is 'negbinom', dispersion must be provided in ...",
+        "weights" = "\n Error: weights must be a numeric vector of finite, non-negative values with length equal to the number of rows in x",
+        "weights_count_auto" = "\n Error: weights are not supported for loss_function 'count::auto'",
         "algorithm" = "\n Error: algorithm must be a valid algorithm. See documentation for valid arguments \n"
     )
     # Check y, x
@@ -227,6 +229,17 @@ gbt.train <- function(y, x, learning_rate = 0.01,
         }   
     }else{
         error_messages <- c(error_messages, error_messages_type["algorithm"])
+    }
+    
+    # weights
+    if(!is.null(weights)){
+        if(!is.numeric(weights) || length(weights) != nrow(x) ||
+           any(!is.finite(weights)) || any(weights < 0)){
+            error_messages <- c(error_messages, error_messages_type["weights"])
+        }
+        if(loss_function %in% c("count::auto")){
+            error_messages <- c(error_messages, error_messages_type["weights_count_auto"])
+        }
     }
     
     # Any error messages?
