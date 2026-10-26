@@ -261,7 +261,9 @@ void ENSEMBLE::train(
         // Stopping criteria
         if(!force_continued_learning){
             // Check criterion
-            if(expected_loss > EPS){
+            // A tree with a single leaf means no split is possible (every
+            // feature is constant); boosting would otherwise never stop
+            if(expected_loss > EPS || new_tree->getNumLeaves() == 1){
                 break;
             }
             
@@ -351,7 +353,7 @@ void ENSEMBLE::train_from_preds(Tvec<double> &pred, Tvec<double> &y, Tmat<double
         }
         
         
-        if(expected_loss < EPS){ // && NUM_BINTREE_CONSECUTIVE < MAX_NUM_BINTREE_CONSECUTIVE){
+        if(expected_loss < EPS && new_tree->getNumLeaves() > 1){ // && NUM_BINTREE_CONSECUTIVE < MAX_NUM_BINTREE_CONSECUTIVE){
             current_tree->next_tree = new_tree;
             current_tree = new_tree;
         }else{
